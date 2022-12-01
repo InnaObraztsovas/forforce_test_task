@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\PhoneRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: PhoneRepository::class)]
 class Phone
@@ -13,8 +15,8 @@ class Phone
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class,inversedBy: 'phone')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist', "remove"], inversedBy: 'phone')]
+    #[ORM\JoinColumn(nullable: false, onDelete: "cascade")]
     private ?User $user = null;
 
     #[ORM\Column(length: 3)]
@@ -27,7 +29,7 @@ class Phone
     private ?int $number = null;
 
     #[ORM\Column]
-    private ?int $balance = null;
+    private ?float $balance = null;
 
     public function getId(): ?int
     {
@@ -82,7 +84,7 @@ class Phone
         return $this;
     }
 
-    public function getBalance(): ?int
+    public function getBalance(): ?float
     {
         return $this->balance;
     }
@@ -100,5 +102,13 @@ class Phone
     public function formatNumber(): string
     {
         return $this->getCountryCode() . $this->getOperatorCode() . $this->getNumber();
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('balance', new Range(
+            ['min' => 1, 'max' => 100]
+        ));
+
     }
 }

@@ -22,7 +22,7 @@ class User
     private ?\DateTimeInterface $date_of_birth = null;
 
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Phone::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Phone::class, cascade: ['persist', "remove"])]
     private iterable $phones;
 
     public function getId(): ?int
