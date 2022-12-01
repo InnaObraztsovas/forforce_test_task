@@ -1,0 +1,7 @@
+<h1>User Info</h1>
+name: {{ user.name }} <br>
+date birthday: {{ userBirthday }}<br>
+phones:<br>
+{% for phone in phones %}
+    - {{ phone.formatNumber() }}<br>
+{% endfor %}
